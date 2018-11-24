@@ -113,7 +113,7 @@ def level_11():
         pygame.display.update()
 
 def redrawArray():
-    win.blit(piece,(0,0))
+    #win.blit(piece,(0,0))
     win.blit(array,(50,50))
     
 #/functions--------------------------------------------
@@ -131,6 +131,7 @@ class InputBox:
         global correct
         global loss
         global accuracy
+        
         if event.type == pygame.MOUSEBUTTONDOWN:
             # If the user clicked on the input_box rect.
             if self.rect.collidepoint(event.pos):
@@ -147,9 +148,12 @@ class InputBox:
 #----------------------------GAMEPLAY PROGRESSION-----------------------------#
                     if self.text == str(answ):
                         print("That is correct! Next question.")
+                        print("-------------------")
                         correct += 1
-                        print("so far",correct,"correct")
+                        print(correct,"correct")
                         print(loss,"wrong")
+                        print("Accuracy:",1 if correct == 0 else round((1-(loss/correct))*100),"%",)
+                        print("-------------------")
                         loadNext()
                     else:
                         print("That is incorrect.")
