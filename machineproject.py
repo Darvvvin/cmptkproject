@@ -220,7 +220,6 @@ redrawGameWindow()
 run = True
 level_1 = False
 while run:
-    level_11()
 #Quit -------------------------------------------------------------
     pygame.time.delay(0)
     for event in pygame.event.get():
