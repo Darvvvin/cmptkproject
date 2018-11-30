@@ -19,7 +19,7 @@ loss = 0
 TILESIZE = 80
 
 #art stuff
-bg = pygame.image.load('sprites/bgnew.jpg')
+bg = pygame.image.load('sprites/bgnew3.jpg')
 bg1 = pygame.image.load('sprites/bg3.jpg')
 play = pygame.image.load('sprites/playspr2.png')
 play_new = pygame.image.load('sprites/playspr2_new.png')
@@ -35,8 +35,8 @@ mouse = pygame.mouse.get_pos()
 pygame.display.set_icon(array)
 
 #button
-box_surface_circle = pygame.Surface((920, 515), pygame.SRCALPHA)
-click = pygame.draw.circle(box_surface_circle, (255,255,255,20), (455,485), 120)
+box_surface = pygame.Surface.get_rect(play)
+click = pygame.draw.rect(bg, (255,255,255),(352,530,242,126), 0)
 
 #/art stuff
 
@@ -57,20 +57,10 @@ def fade(width, height):
     for alpha in range(0,300,2):
         fade.set_alpha(alpha)
         win.blit(bg,(0,0))
-        win.blit(play, (312,430))
+        win.blit(play, (352,530))
         win.blit(fade, (0,0))
         pygame.display.update()
         pygame.time.delay(0)
-
-def fadein(width, height):
-    fade = pygame.Surface((width,height))
-    fade.fill((0,0,0))
-    for alpha in range(300,0,2):
-        fade.set_alpha(alpha)
-        win.blit(bg1,(0,0))
-        win.blit(fade, (0,0))
-        pygame.display.update()
-        pygame.time.delay(20)
 
 def gameplay():
     global random_num
@@ -109,8 +99,6 @@ def redrawArray():
     for x in range(160,160+80*random_num,TILESIZE):
         for y in range(80,80+80*random_num2,TILESIZE):
             win.blit(piece,(x,y))
-
-    #win.blit(array,(50,50))
 
 def draw_grid():
     for x in range(160,880,TILESIZE):
@@ -224,7 +212,6 @@ redrawGameWindow()
 run = True
 level_1 = False
 while run:
-    level_11()
 #Quit -------------------------------------------------------------
     pygame.time.delay(0)
     for event in pygame.event.get():
@@ -233,7 +220,7 @@ while run:
 #Play -------------------------------------------------------------
     if level_1 == False:
         if click.collidepoint(pygame.mouse.get_pos()):
-            win.blit(play_new,[312,430])
+            win.blit(play_new,[352,530])
             pygame.display.update()
                    
             if pygame.mouse.get_pressed()[0]:
@@ -241,12 +228,12 @@ while run:
                 fade(960,720)
                 level_1 = True               
 
-        else: win.blit(play, (312,430))
+        else: win.blit(play, (352,530))
 
     if level_1:
         level_11()        
         
     clock.tick(30)
-    pygame.display.update()
+    pygame.display.flip()
 #exit ---------------------------------------------------
 pygame.quit()
