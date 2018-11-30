@@ -16,7 +16,7 @@ correct = 0
 loss = 0
 
 #chocolate array setup
-TILESIZE = 400
+TILESIZE = 80
 
 #art stuff
 bg = pygame.image.load('sprites/bgnew.jpg')
@@ -28,7 +28,7 @@ array = pygame.image.load('sprites/koya.png')
 array = pygame.transform.scale(array, (350,350))
 
 piece = pygame.image.load('sprites/piece.png')
-piece = pygame.transform.scale(piece, (100,100))
+piece = pygame.transform.scale(piece, (80,80))
 
 mouse = pygame.mouse.get_pos()
 
@@ -77,14 +77,16 @@ def gameplay():
     global random_num2
     global answ
     
-    random_num = randint(1,20)
-    random_num2 = randint(1,20)
+    random_num = randint(1,8)
+    random_num2 = randint(1,4)
 
     answ = random_num*random_num2
     
     GRIDWIDTH = random_num/TILESIZE
     GRIDHEIGHT = random_num2/TILESIZE
     
+    draw_grid()
+
     print(random_num)
     print(random_num2)
     print("The answer is",answ)
@@ -102,19 +104,20 @@ def level_11():
         pygame.quit()
         
     gameplay()
-    
-    while not gameExit:
-
-        for event in pygame.event.get():
-
-            if event.type == pygame.QUIT:
-                gameExit = True
-                        
-        pygame.display.update()
 
 def redrawArray():
-    #win.blit(piece,(0,0))
-    win.blit(array,(50,50))
+    for x in range(160,160+80*random_num,TILESIZE):
+        for y in range(80,80+80*random_num2,TILESIZE):
+            win.blit(piece,(x,y))
+
+    #win.blit(array,(50,50))
+
+def draw_grid():
+    for x in range(160,880,TILESIZE):
+        pygame.draw.line(bg1, (255,255,255), (x,80),(x,400))
+
+    for y in range(80,480,TILESIZE):
+        pygame.draw.line(bg1, (255,255,255), (160,y),(800,y))
     
 #/functions--------------------------------------------
 #inputBox----------------------------------------------
@@ -182,6 +185,7 @@ class InputBox:
 
 
 def main():
+    pygame.init()
     clock = pygame.time.Clock()
     input_box = InputBox(705, 440, 215, 200)
     input_boxes = [input_box]
@@ -220,6 +224,7 @@ redrawGameWindow()
 run = True
 level_1 = False
 while run:
+    level_11()
 #Quit -------------------------------------------------------------
     pygame.time.delay(0)
     for event in pygame.event.get():
@@ -238,7 +243,7 @@ while run:
 
         else: win.blit(play, (312,430))
 
-    while level_1:
+    if level_1:
         level_11()        
         
     clock.tick(30)
