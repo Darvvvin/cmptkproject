@@ -1,4 +1,5 @@
 import pygame
+import re
 from random import randint
 
 #initialization
@@ -154,7 +155,7 @@ class InputBox:
                 elif event.key == pygame.K_BACKSPACE:
                     self.text = self.text[:-1]
                 else:
-                    if len(str(self.text)) < 3:
+                    if re.match('^[0-9]*$',str(self.text)) and len(str(self.text)) < 3:
                         self.text += event.unicode
 #-----------------------------------------------------------------------------#
                 # Re-render the text.
@@ -165,7 +166,7 @@ class InputBox:
         width = max(217, self.txt_surface.get_width())
 
     def draw(self, win):
-        # Blit the text.
+        #position text properly
         win.blit(self.txt_surface, (self.rect.x+80 if len(str(self.text)) == 1 else self.rect.x+55 if len(str(self.text)) == 2 else self.rect.x+28, self.rect.y+65))
         # Blit the rect.
         pygame.draw.rect(win, self.color, self.rect, 5)
@@ -234,6 +235,6 @@ while run:
         level_11()        
         
     clock.tick(30)
-    pygame.display.flip()
+    pygame.display.update()
 #exit ---------------------------------------------------
 pygame.quit()
