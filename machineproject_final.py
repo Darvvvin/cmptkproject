@@ -13,9 +13,27 @@ FONT = pygame.font.Font("ARCADEPI.ttf", 72)
 FONT2 = pygame.font.Font("ARCADEPI.ttf", 92)
 
 #counters
+coun = 6000
+mill = 0
+sec = 0
+minu = 0
+startcount = 0
 correct = 0
 loss = 0
+totalcoun = 0
+totalmin = 0
+totalsec = 0
+printonce = 0
 
+#conversion
+totalcoun = coun
+mill = coun
+while mill > 99:
+    mill = mill - 100
+sec = int (coun/100)
+while sec > 59:
+    sec = sec - 60
+minu = int (coun / 6000)
 #chocolate array setup
 TILESIZE = 80
 
@@ -48,6 +66,60 @@ click = pygame.draw.rect(bg, (255,255,255),(352,530,242,126), 0)
 def loadNext():
     gameplay()
 
+#timer
+def timecount():
+    global coun
+    global mill
+    global sec
+    global minu
+    global startcount
+    global totalmin
+    global totalsec
+    global printonce
+    if coun < 1:
+        if printonce < 1 :
+        
+            totalsec = int (totalcoun/100)
+            while totalsec > 59:
+                totalsec = totalsec - 60
+            totalmin = int (totalcoun / 6000)
+            printonce += 1
+            print("You got ", correct, "answers in", totalmin, "minutes, and ",totalsec, "seconds")
+
+    if coun > 0 :
+        #DECREMENT BY 3
+        coun -= 3
+        mill = coun
+        while mill > 99:
+            mill = mill - 100
+            sec = int (coun/100)
+        while sec > 59:
+            sec = sec - 60
+            minu = int (coun / 6000)
+        if coun < 6000:
+            minu = 0
+        if coun < 100:
+            sec = 0
+        if coun < 0:
+            mill = 0
+        
+
+#gives 8 seconds per correct answer
+def rewardtime():
+    global coun
+    global totalcoun
+    global correct
+    
+    coun += 100
+    #also adds to total count and correct answer
+    totalcoun += 800
+    correct += 1
+    #convertion for the minutes and seconds of total time
+    totalsec = int (totalcoun/100)
+    while totalsec > 59:
+        totalsec = totalsec - 60
+    totalmin = int (totalcoun / 6000)
+    
 def redrawGameWindow():
     win.blit(bg,(0,0))
     pygame.display.update()
@@ -67,7 +139,24 @@ def gameplay():
     global random_num
     global random_num2
     global answ
-    
+    global correct
+
+#    if correct > 12:
+#        random_num = randint(10,20)
+#        random_num2 = randint(10,20)
+#    elif correct > 9:
+#        random_num = randint(8,17)
+#        random_num2 = randint(8,17)
+#   elif correct > 6:
+#        random_num = randint(6,14)
+#        random_num2 = randint(6,14)
+#    elif correct > 3:
+#        random_num = randint(4,11)
+#        random_num2 = randint(4,11)
+#    else:
+#        random_num = randint(1,8)
+#        random_num2 = randint(1,4)
+#
     random_num = randint(1,8)
     random_num2 = randint(1,4)
 
@@ -95,6 +184,14 @@ def level_11():
         pygame.quit()
         
     gameplay()
+    
+    while not gameExit:
+        while coun > 0 :
+
+            for event in pygame.event.get():
+
+                if event.type == pygame.QUIT:
+                    gameExit = True
 
 def redrawArray():
     for x in range(160,160+80*random_num,TILESIZE):
@@ -110,7 +207,13 @@ def draw_grid():
     
 #/functions--------------------------------------------
 #inputBox----------------------------------------------
-
+#***********************************************
+# Title: Input Box in Pygame
+# Author: skrx
+# Date: September 24, 2017
+# Code version: 3
+# Availability: StackOverflow https://stackoverflow.com/questions/46390231/how-to-create-a-text-input-box-with-pygame 
+#***********************************************
 class InputBox:
     def __init__(self, x, y, w, h, text=''):
         self.rect = pygame.Rect(x, y, w, h)
@@ -123,10 +226,14 @@ class InputBox:
         global correct
         global loss
         global accuracy
+        global startcount
         
         if event.type == pygame.MOUSEBUTTONDOWN:
             # If the user clicked on the input_box rect.
             if self.rect.collidepoint(event.pos):
+                #timer counts when you press the box
+                if startcount == 0:
+                    startcount += 1
                 # Toggle the active variable.
                 self.active = not self.active
             else:
@@ -147,6 +254,7 @@ class InputBox:
                         print("Accuracy:",1 if correct == 0 else round((1-(loss/correct))*100),"%",)
                         print("-------------------")
                         loadNext()
+                        rewardtime()
                     else:
                         print("That is incorrect.")
                         loss += 1
@@ -188,7 +296,11 @@ def main():
                 
         for box in input_boxes:
             box.update()
+
+            if startcount == 1:
             
+                timecount()
+                
         win.blit(bg1, (0,0))            
         redrawArray()
 #--------NUMBERS---------------------------------------------------        
@@ -198,6 +310,30 @@ def main():
         condition = True
         num2 = FONT2.render(str(random_num2), True, (255,255,255))
         win.blit(num2,(449 if len(str(random_num2)) < 2 else 413,500))
+#------------------TIMER DISPLAY-----------------------------------
+        if coun > 5999:
+            MINUT = FONT2.render(str(minu), True, (255,255,255))
+            win.blit(MINUT,(600,30))
+        if coun > 5999 :
+            seco = FONT2.render(str(sec), True, (255,255,255))
+            win.blit(seco,(790,30))
+        if coun < 6000:
+            seco = FONT2.render(str(sec), True, (255,255,255))
+            win.blit(seco,(600,30))
+            
+        if coun > 3000 and coun < 5999 :
+            seco = FONT2.render(str(sec), True, (255,255,255))
+            win.blit(seco,(600,30))
+        elif coun < 3000:
+            seco = FONT2.render(str(sec), True, (255,0,0))
+            win.blit(seco,(600,30))
+        if coun < 6000 and coun > 3000:
+            milli = FONT2.render(str(mill), True, (255,255,255))
+            win.blit(milli,(790,30))
+        if coun < 3000:
+            milli = FONT2.render(str(mill), True, (255,0,0))
+            win.blit(milli,(790,30))
+                 
 #--------NUMBERS---------------------------------------------------         
         for box in input_boxes:
             box.draw(win)
